@@ -1,0 +1,147 @@
+<style>
+  /* The switch - the box around the slider */
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 28px;
+    height: 15px;
+    margin: 0 5px;
+  }
+
+  .switch input {display:none;}
+
+  .switch-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #91D1CF;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+
+  .switch-slider:before {
+    position: absolute;
+    content: "";
+    height: 10px;
+    width: 10px;
+    left: 3px;
+    bottom: 2px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  }
+
+  input:checked + .switch-slider {
+    background-color: #30C4D2;;
+  }
+
+  input:focus + .switch-slider {
+    box-shadow: 0 0 1px #2196F3;
+  }
+
+  input:checked + .switch-slider:before {
+    -webkit-transform: translateX(12px);
+    -ms-transform: translateX(12px);
+    transform: translateX(12px);
+  }
+
+  .switch-slider.round {
+    border-radius: 34px;
+  }
+
+  .switch-slider.round:before {
+    border-radius: 50%;
+  }
+</style>
+<div class="panel panel-default">
+  <div class="panel-heading">{{ heading_title }}</div>
+  <div class="list-group">
+    <a class="list-group-item">{{ text_price }}</a>
+    <div class="list-group-item">
+      <input type="text" placeholder="От" class="form-control">
+      <input type="text" placeholder="До" class="form-control">
+    </div>
+    {% for filter_group in filter_groups %}
+      <a class="list-group-item">{{ filter_group.name }}</a>
+      <div class="list-group-item">
+        <div id="filter-group{{ filter_group.filter_group_id }}">
+          {% if settings.filter_group_settings[filter_group.filter_group_id] == 'checkbox' %}
+
+            {% for filter in filter_group.filter %}
+              <div class="checkbox">
+                <label>
+                  {% if filter.filter_id in filter_category %}
+                    <input type="checkbox" name="filter[]" value="{{ filter.filter_id }}" checked="checked" />
+                    {{ filter.name }}
+                  {% else %}
+                    <input type="checkbox" name="filter[]" value="{{ filter.filter_id }}" />
+                    {{ filter.name }}
+                  {% endif %}
+                </label>
+              </div>
+            {% endfor %}
+
+          {% elseif settings.filter_group_settings[filter_group.filter_group_id] == 'radio' %}
+
+            {% for filter in filter_group.filter %}
+              <div class="radio">
+                <label>
+                  {% if filter.filter_id in filter_category %}
+                    <input type="radio" name="filter[]" value="{{ filter.filter_id }}" checked="checked" />
+                    {{ filter.name }}
+                  {% else %}
+                    <input type="radio" name="filter[]" value="{{ filter.filter_id }}" />
+                    {{ filter.name }}
+                  {% endif %}
+                </label>
+              </div>
+            {% endfor %}
+
+          {% elseif settings.filter_group_settings[filter_group.filter_group_id] == 'select' %}
+            <select name="filter[]" id="" class="form-control">
+              {% for filter in filter_group.filter %}
+                {% if filter.filter_id in filter_category %}
+                  <option value="{{ filter.filter_id }}" selected="selected">{{ filter.name }}</option>
+                {% else %}
+                  <option value="{{ filter.filter_id }}">{{ filter.name }}</option>
+                {% endif %}
+              {% endfor %}
+            </select>
+
+          {% elseif settings.filter_group_settings[filter_group.filter_group_id] == 'switch' %}
+
+            <span>{{ filter_group.filter[0].name }}</span>
+
+            <label class="switch">
+              <input type="checkbox">
+              <span class="switch-slider round"></span>
+            </label>
+
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  <div class="panel-footer text-right">
+    <button type="button" id="button-filter" class="btn btn-primary">{{ button_filter }}</button>
+  </div>
+</div>
+<script type="text/javascript"><!--
+$('#button-filter').on('click', function() {
+	filter = [];
+
+	$('input[name^=\'filter\']:checked').each(function(element) {
+		filter.push(this.value);
+	});
+
+  $('select[name^=\'filter\']').each(function(element) {
+      filter.push(this.value);
+  });
+
+	location = '{{ action }}&filter=' + filter.join(',');
+});
+//--></script> 
