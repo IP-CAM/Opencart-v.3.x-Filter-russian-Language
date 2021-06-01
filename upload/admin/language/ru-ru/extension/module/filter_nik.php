@@ -13,6 +13,7 @@ $_['text_switcher']    = 'Переключатель';
 
 // Entry
 $_['entry_filters_group'] = 'Группы фильтров';
+$_['entry_count_display_items'] = 'Количество отображаемых элементов';
 $_['entry_status']     = 'Статус';
 
 // Error

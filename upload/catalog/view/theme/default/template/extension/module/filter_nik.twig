@@ -56,23 +56,33 @@
   .switch-slider.round:before {
     border-radius: 50%;
   }
+
+  .hidden-filter-element {
+    display: none;
+  }
+  .hide-all-filter-elements {
+    display: none;
+  }
+  .show-all-filter-elements, .hide-all-filter-elements {
+    cursor: pointer;
+  }
 </style>
 <div class="panel panel-default">
   <div class="panel-heading">{{ heading_title }}</div>
   <div class="list-group">
     <a class="list-group-item">{{ text_price }}</a>
     <div class="list-group-item">
-      <input type="text" placeholder="От" class="form-control">
-      <input type="text" placeholder="До" class="form-control">
+      <input type="number" value="{{ price_min }}" min="0" name="price_min" placeholder="От" class="form-control">
+      <input type="number" value="{{ price_max }}" min="0" name="price_max" placeholder="До" class="form-control">
     </div>
     {% for filter_group in filter_groups %}
       <a class="list-group-item">{{ filter_group.name }}</a>
       <div class="list-group-item">
         <div id="filter-group{{ filter_group.filter_group_id }}">
-          {% if settings.filter_group_settings[filter_group.filter_group_id] == 'checkbox' %}
+          {% if settings.filter_group_settings[filter_group.filter_group_id].display_type == 'checkbox' %}
 
             {% for filter in filter_group.filter %}
-              <div class="checkbox">
+              <div class="checkbox {% if loop.index > settings.filter_group_settings[filter_group.filter_group_id].display_count %}hidden-filter-element{% endif %}">
                 <label>
                   {% if filter.filter_id in filter_category %}
                     <input type="checkbox" name="filter[]" value="{{ filter.filter_id }}" checked="checked" />
@@ -85,10 +95,15 @@
               </div>
             {% endfor %}
 
-          {% elseif settings.filter_group_settings[filter_group.filter_group_id] == 'radio' %}
+            {% if filter_group.filter|length > settings.filter_group_settings[filter_group.filter_group_id].display_count %}
+              <span class="show-all-filter-elements">{{ button_show_all }} ({{ filter_group.filter|length }})</span>
+              <span class="hide-all-filter-elements">{{ button_hide_all }}</span>
+            {% endif %}
+
+          {% elseif settings.filter_group_settings[filter_group.filter_group_id].display_type == 'radio' %}
 
             {% for filter in filter_group.filter %}
-              <div class="radio">
+              <div class="radio {% if loop.index > settings.filter_group_settings[filter_group.filter_group_id].display_count %}hidden-filter-element{% endif %}">
                 <label>
                   {% if filter.filter_id in filter_category %}
                     <input type="radio" name="filter[]" value="{{ filter.filter_id }}" checked="checked" />
@@ -101,7 +116,12 @@
               </div>
             {% endfor %}
 
-          {% elseif settings.filter_group_settings[filter_group.filter_group_id] == 'select' %}
+            {% if filter_group.filter|length > settings.filter_group_settings[filter_group.filter_group_id].display_count %}
+              <span class="show-all-filter-elements">{{ button_show_all }} ({{ filter_group.filter|length }})</span>
+              <span class="hide-all-filter-elements">{{ button_hide_all }}</span>
+            {% endif %}
+
+          {% elseif settings.filter_group_settings[filter_group.filter_group_id].display_type == 'select' %}
             <select name="filter[]" id="" class="form-control">
               {% for filter in filter_group.filter %}
                 {% if filter.filter_id in filter_category %}
@@ -112,12 +132,16 @@
               {% endfor %}
             </select>
 
-          {% elseif settings.filter_group_settings[filter_group.filter_group_id] == 'switch' %}
+          {% elseif settings.filter_group_settings[filter_group.filter_group_id].display_type == 'switch' %}
 
             <span>{{ filter_group.filter[0].name }}</span>
 
             <label class="switch">
-              <input type="checkbox">
+              {% if filter_group.filter[0].filter_id in filter_category %}
+                <input type="checkbox" name="filter[]" value="{{ filter_group.filter[0].filter_id }}" checked="checked" />
+              {% else %}
+                <input type="checkbox" name="filter[]" value="{{ filter_group.filter[0].filter_id }}" />
+              {% endif %}
               <span class="switch-slider round"></span>
             </label>
 
@@ -142,6 +166,30 @@ $('#button-filter').on('click', function() {
       filter.push(this.value);
   });
 
-	location = '{{ action }}&filter=' + filter.join(',');
+  let url = '{{ action }}';
+
+  if (filter.length > 0) {
+	  url += '&filter=' + filter.join(',');
+  }
+
+	if ($('input[name="price_min"]').val()) {
+      url += '&price_min=' + $('input[name="price_min"]').val()
+  }
+
+	if ($('input[name="price_max"]').val()) {
+	    url += '&price_max=' + $('input[name="price_max"]').val()
+  }
+
+	location = url;
 });
+$('.show-all-filter-elements').on('click', function () {
+  $(this).parent().find('.hidden-filter-element').show()
+  $(this).parent().find('.hide-all-filter-elements').show()
+  $(this).hide()
+})
+$('.hide-all-filter-elements').on('click', function () {
+    $(this).parent().find('.hidden-filter-element').hide()
+    $(this).parent().find('.show-all-filter-elements').show()
+    $(this).hide()
+})
 //--></script> 

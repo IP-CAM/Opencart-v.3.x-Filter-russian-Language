@@ -33,13 +33,16 @@
                   <div class="col-sm-2">
                       <p style="text-align: right;">{{ filter.name }}</p>
                   </div>
-                  <div class="col-sm-10">
-                    <select name="module_filter_nik_filter_group_settings[{{ filter.filter_group_id }}]" id="input-filter-group-settings" class="form-control">
-                      <option value="checkbox" {% if module_filter_nik_filter_group_settings[filter.filter_group_id] == 'checkbox' %}selected{% endif %}>{{ text_checkbox }}</option>
-                      <option value="radio" {% if module_filter_nik_filter_group_settings[filter.filter_group_id] == 'radio' %}selected{% endif %}>{{ text_radio }}</option>
-                      <option value="select" {% if module_filter_nik_filter_group_settings[filter.filter_group_id] == 'select' %}selected{% endif %}>{{ text_select }}</option>
-                      <option value="switch" {% if module_filter_nik_filter_group_settings[filter.filter_group_id] == 'switch' %}selected{% endif %}>{{ text_switcher }}</option>
+                  <div class="col-sm-7">
+                    <select name="module_filter_nik_filter_group_settings[{{ filter.filter_group_id }}][display_type]" id="input-filter-group-settings" class="form-control">
+                      <option value="checkbox" {% if module_filter_nik_filter_group_settings[filter.filter_group_id].display_type == 'checkbox' %}selected{% endif %}>{{ text_checkbox }}</option>
+                      <option value="radio" {% if module_filter_nik_filter_group_settings[filter.filter_group_id].display_type == 'radio' %}selected{% endif %}>{{ text_radio }}</option>
+                      <option value="select" {% if module_filter_nik_filter_group_settings[filter.filter_group_id].display_type == 'select' %}selected{% endif %}>{{ text_select }}</option>
+                      <option value="switch" {% if module_filter_nik_filter_group_settings[filter.filter_group_id].display_type == 'switch' %}selected{% endif %}>{{ text_switcher }}</option>
                     </select>
+                  </div>
+                  <div class="col-sm-3">
+                    <input type="text" name="module_filter_nik_filter_group_settings[{{ filter.filter_group_id }}][display_count]" value="{{ module_filter_nik_filter_group_settings[filter.filter_group_id].display_count }}" class="form-control" placeholder="{{ entry_count_display_items }}">
                   </div>
                 </div>
                 <hr />

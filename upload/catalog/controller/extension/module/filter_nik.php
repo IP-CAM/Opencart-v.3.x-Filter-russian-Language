@@ -44,7 +44,19 @@ class ControllerExtensionModuleFilterNik extends Controller {
 				$data['filter_category'] = array();
 			}
 
-			$this->load->model('catalog/product');
+            if (isset($this->request->get['price_min'])) {
+                $data['price_min'] = $this->request->get['price_min'];
+            } else {
+                $data['price_min'] = '';
+            }
+
+            if (isset($this->request->get['price_max'])) {
+                $data['price_max'] = $this->request->get['price_max'];
+            } else {
+                $data['price_max'] = '';
+            }
+
+            $this->load->model('catalog/product');
 
 			$data['filter_groups'] = array();
 

@@ -64,9 +64,9 @@ class ControllerExtensionModuleFilterNik extends Controller {
         }
 
 		if (isset($this->request->post['module_filter_status'])) {
-			$data['module_filter_nik_status'] = $this->request->post['module_filter_status'];
+			$data['module_filter_nik_status'] = $this->request->post['module_filter_nik_status'];
 		} else {
-			$data['module_filter_nik_status'] = $this->config->get('module_filter_status');
+			$data['module_filter_nik_status'] = $this->config->get('module_filter_nik_status');
 		}
 
 		$data['header'] = $this->load->controller('common/header');
