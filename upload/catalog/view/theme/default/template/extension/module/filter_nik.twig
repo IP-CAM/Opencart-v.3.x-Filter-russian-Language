@@ -72,8 +72,8 @@
   <div class="list-group">
     <a class="list-group-item">{{ text_price }}</a>
     <div class="list-group-item">
-      <input type="number" value="{{ price_min }}" min="0" name="price_min" placeholder="От" class="form-control">
-      <input type="number" value="{{ price_max }}" min="0" name="price_max" placeholder="До" class="form-control">
+      <input type="number" value="{{ price_min }}" min="0" name="price_min" placeholder="{{ text_from }}" class="form-control">
+      <input type="number" value="{{ price_max }}" min="0" name="price_max" placeholder="{{ text_before }}" class="form-control">
     </div>
     {% for filter_group in filter_groups %}
       <a class="list-group-item">{{ filter_group.name }}</a>
@@ -96,8 +96,8 @@
             {% endfor %}
 
             {% if filter_group.filter|length > settings.filter_group_settings[filter_group.filter_group_id].display_count %}
-              <span class="show-all-filter-elements">{{ button_show_all }} ({{ filter_group.filter|length }})</span>
-              <span class="hide-all-filter-elements">{{ button_hide_all }}</span>
+              <span class="show-all-filter-elements">{{ button_show_more }} ({{ filter_group.filter|length - settings.filter_group_settings[filter_group.filter_group_id].display_count }})</span>
+              <span class="hide-all-filter-elements">{{ button_hide }}</span>
             {% endif %}
 
           {% elseif settings.filter_group_settings[filter_group.filter_group_id].display_type == 'radio' %}
@@ -117,8 +117,8 @@
             {% endfor %}
 
             {% if filter_group.filter|length > settings.filter_group_settings[filter_group.filter_group_id].display_count %}
-              <span class="show-all-filter-elements">{{ button_show_all }} ({{ filter_group.filter|length }})</span>
-              <span class="hide-all-filter-elements">{{ button_hide_all }}</span>
+              <span class="show-all-filter-elements">{{ button_show_more }} ({{ filter_group.filter|length - settings.filter_group_settings[filter_group.filter_group_id].display_count }})</span>
+              <span class="hide-all-filter-elements">{{ button_hide }}</span>
             {% endif %}
 
           {% elseif settings.filter_group_settings[filter_group.filter_group_id].display_type == 'select' %}

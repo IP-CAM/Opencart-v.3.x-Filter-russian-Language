@@ -63,6 +63,88 @@
               </select>
             </div>
           </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-status">Доработка модуля</label>
+            <div class="col-sm-10">
+              <pre>
+                1. Вставить данный код:
+
+                if (isset($this->request->get['price_min'])) {
+                    $price_min = $this->request->get['price_min'];
+                } else {
+                    $price_min = '';
+                }
+
+                if (isset($this->request->get['price_max'])) {
+                    $price_max = $this->request->get['price_max'];
+                } else {
+                    $price_max = '';
+                }
+
+                в catalog/controller/product/category.php сразу после:
+
+                if (isset($this->request->get['filter'])) {
+                    $filter = $this->request->get['filter'];
+                } else {
+                    $filter = '';
+                }
+
+                2. Вставить данный код:
+
+                if (isset($this->request->get['price_min'])) {
+                    $url .= '&price_min=' . $this->request->get['price_min'];
+                }
+
+                if (isset($this->request->get['price_max'])) {
+                    $url .= '&price_max=' . $this->request->get['price_max'];
+                }
+
+                все в том же файле, во всех местах, после этого кода:
+
+                if (isset($this->request->get['filter'])) {
+                    $url .= '&filter=' . $this->request->get['filter'];
+                }
+
+                3. В этом же файле контроллера категорий, перед инициализацией переменной $filter_data, вставить данный код:
+
+                $currency_value = $this->currency->getValue($this->session->data['currency']);
+
+                4. В сам массив $filter_data дописать такие ячейки:
+
+                'price_min'          => $price_min,
+                'price_max'          => $price_max,
+                'currency_value'     => $currency_value,
+
+                5. В catalog/model/catalog/product.php в функции getProducts() поменять эту строчку:
+
+                $sql .= " LEFT JOIN " . DB_PREFIX . "product_description pd ON (p.product_id = pd.product_id) LEFT JOIN " . DB_PREFIX . "product_to_store p2s ON (p.product_id = p2s.product_id) WHERE pd.language_id = '" . (int)$this->config->get('config_language_id') . "' AND p.status = '1' AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "'";
+
+                на эту:
+
+                $sql .= " LEFT JOIN " . DB_PREFIX . "product_description pd ON (p.product_id = pd.product_id) LEFT JOIN " . DB_PREFIX . "product_to_store p2s ON (p.product_id = p2s.product_id) LEFT JOIN " . DB_PREFIX . "product_special ps ON p.product_id = ps.product_id LEFT JOIN " . DB_PREFIX . "product_discount pds ON p.product_id = p2s.product_id WHERE pd.language_id = '" . (int)$this->config->get('config_language_id') . "' AND p.status = '1' AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "'";
+
+                6. Добавить этот код:
+
+                if (!empty($data['price_min']) || !empty($data['price_max'])) {
+                    if (!empty($data['price_min'])) {
+                        $sql .= " AND (CASE WHEN ps.price*" . $data['currency_value'] . " IS NOT NULL THEN ps.price*" . $data['currency_value'] . " ELSE p.price*" . $data['currency_value'] . " END) >='" . $data['price_min'] . "'";
+                    }
+
+                    if (!empty($data['price_max'])) {
+                        $sql .= " AND (CASE WHEN ps.price*" . $data['currency_value'] . " IS NOT NULL THEN ps.price*" . $data['currency_value'] . " ELSE p.price*" . $data['currency_value'] . " END) <='" . $data['price_max'] . "'";
+                    }
+                }
+
+                перед этим:
+
+                if (!empty($data['filter_manufacturer_id'])) {
+                    $sql .= " AND p.manufacturer_id = '" . (int)$data['filter_manufacturer_id'] . "'";
+                }
+
+                7. С функцией getTotalProducts() проделать тоже самое что в 5 и 6 пункте.
+              </pre>
+            </div>
+          </div>
         </form>
       </div>
     </div>

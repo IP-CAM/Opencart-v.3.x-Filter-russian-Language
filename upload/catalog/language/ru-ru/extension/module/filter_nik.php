@@ -2,6 +2,10 @@
 // Heading
 $_['heading_title'] = 'Фильтр';
 
+// Text
+$_['text_from']     = 'От';
+$_['text_before']   = 'До';
+
 // Buttons
-$_['button_show_all'] = 'Показать все';
-$_['button_hide_all'] = 'Скрыть все';
+$_['button_show_more'] = 'Показать еще';
+$_['button_hide'] = 'Скрыть';
