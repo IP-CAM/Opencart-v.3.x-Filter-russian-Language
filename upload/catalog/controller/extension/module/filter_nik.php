@@ -5,7 +5,9 @@ class ControllerExtensionModuleFilterNik extends Controller {
 
         $settings = $this->model_setting_setting->getSetting('module_filter_nik');
 
-        $data['settings']['filter_group_settings'] = unserialize($settings['module_filter_nik_filter_group_settings']);
+        if (isset($settings['module_filter_nik_filter_group_settings'])) {
+            $data['settings']['filter_group_settings'] = unserialize($settings['module_filter_nik_filter_group_settings']);
+        }
 
 		if (isset($this->request->get['path'])) {
 			$parts = explode('_', (string)$this->request->get['path']);
@@ -85,8 +87,9 @@ class ControllerExtensionModuleFilterNik extends Controller {
 					);
 				}
 
-				return $this->load->view('extension/module/filter_nik', $data);
 			}
+
+            return $this->load->view('extension/module/filter_nik', $data);
 		}
 	}
 }

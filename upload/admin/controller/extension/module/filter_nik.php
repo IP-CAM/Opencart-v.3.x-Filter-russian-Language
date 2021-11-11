@@ -10,7 +10,10 @@ class ControllerExtensionModuleFilterNik extends Controller {
 		$this->load->model('setting/setting');
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
-            $this->request->post['module_filter_nik_filter_group_settings'] = serialize($this->request->post['module_filter_nik_filter_group_settings']);
+		    if (isset($this->request->post['module_filter_nik_filter_group_settings'])) {
+                $this->request->post['module_filter_nik_filter_group_settings'] = serialize($this->request->post['module_filter_nik_filter_group_settings']);
+            }
+
 			$this->model_setting_setting->editSetting('module_filter_nik', $this->request->post);
 
 			$this->session->data['success'] = $this->language->get('text_success');
